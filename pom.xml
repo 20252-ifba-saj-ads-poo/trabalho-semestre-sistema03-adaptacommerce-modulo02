@@ -31,6 +31,12 @@
 
 
         
+    
+      <dependency>
+        <groupId>com.beust</groupId>
+        <artifactId>jcommander</artifactId>
+        <version>1.75</version>
+      </dependency>
     </dependencies>
     <build>
         <defaultGoal>clean javafx:run</defaultGoal>

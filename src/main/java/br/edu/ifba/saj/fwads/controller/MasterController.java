@@ -35,7 +35,11 @@ public class MasterController {
         alert.showAndWait()
                 .filter(response -> response == ButtonType.YES)
                 .ifPresent(response -> {
-                    App.setRoot("controller/Login.fxml");
+                    try {
+                        App.setRoot("controller/Login.fxml");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 });
     }
 
@@ -43,7 +47,6 @@ public class MasterController {
     void showHome(ActionEvent event) {
         limparBotoes(event.getSource());
         masterPane.setCenter(new Pane());
-
     }
 
     @FXML
@@ -52,35 +55,33 @@ public class MasterController {
         masterPane.setCenter(new Pane());
     }
 
+    @FXML
+    void showFornecedores(ActionEvent event) {
+        limparBotoes(event.getSource());
+        showFXMLFile("controller/ListFornecedor.fxml");
+    }
+
+    @FXML
+    void showClientes(ActionEvent event) {
+        limparBotoes(event.getSource());
+        showFXMLFile("controller/ListCliente.fxml");
+    }
+
     private void limparBotoes(Object source) {
         menu.getChildren().forEach((node) -> {
             if (node instanceof Button btn) {
                 btn.getStyleClass().clear();
                 btn.getStyleClass().add("btn-menu");
             }
-        }
-
-        );
+        });
         if (source instanceof Button btn) {
             btn.getStyleClass().clear();
             btn.getStyleClass().add("btn-menu-selected");
         }
     }
 
-    @FXML
-    void showAutores(ActionEvent event) {
-        limparBotoes(event.getSource());
-        showFXMLFile("CadAutor.fxml");
-    }
-
-    @FXML
-    void showLivros(ActionEvent event) {
-        limparBotoes(event.getSource());
-        showFXMLFile("CadLivro.fxml");
-    }
-
     private void showFXMLFile(String resourceName) {
-        try {            
+        try {
             Pane fxmlCarregado = FXMLLoader.load(getClass().getResource(resourceName));
             masterPane.setCenter(fxmlCarregado);
         } catch (Exception e) {

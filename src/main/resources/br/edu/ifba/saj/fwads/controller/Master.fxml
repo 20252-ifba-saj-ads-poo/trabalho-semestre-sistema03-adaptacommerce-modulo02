@@ -12,7 +12,7 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="masterPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="main" stylesheets="@assets/style.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.edu.ifba.saj.fwads.controller.MasterController">
+<BorderPane fx:id="masterPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="main" stylesheets="@assets/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.edu.ifba.saj.fwads.controller.MasterController">
    <top>
       <AnchorPane prefHeight="100.0" styleClass="top" stylesheets="@assets/style.css" BorderPane.alignment="CENTER">
          <children>
@@ -39,7 +39,7 @@
                   <Insets bottom="5.0" left="10.0" />
                </padding>
                <font>
-                  <Font size="25.0" />
+                  <Font size="18.0" />
                </font>
                <graphic>
                   <ImageView fitHeight="150.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
@@ -49,12 +49,13 @@
                   </ImageView>
                </graphic>
             </Button>
-            <Button alignment="TOP_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#showAutores" prefHeight="35.0" styleClass="btn-menu" stylesheets="@assets/style.css" text="Cadastro Autores" textFill="WHITE">
+            
+            <Button fx:id="btnFornecedor" alignment="TOP_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#showFornecedores" prefHeight="35.0" styleClass="btn-menu" stylesheets="@assets/style.css" text="Fornecedor" textFill="WHITE">
                <padding>
                   <Insets bottom="5.0" left="10.0" />
                </padding>
                <font>
-                  <Font size="25.0" />
+                  <Font size="18.0" />
                </font>
                <graphic>
                   <ImageView fitHeight="150.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
@@ -64,42 +65,13 @@
                   </ImageView>
                </graphic>
             </Button>
-            <Button alignment="TOP_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#showLivros" prefHeight="35.0" styleClass="btn-menu" stylesheets="@assets/style.css" text="Cadastro Livros" textFill="WHITE">
+            
+            <Button fx:id="btnCliente" alignment="TOP_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#showClientes" prefHeight="35.0" styleClass="btn-menu" stylesheets="@assets/style.css" text="Cliente" textFill="WHITE">
                <padding>
                   <Insets bottom="5.0" left="10.0" />
                </padding>
                <font>
-                  <Font size="25.0" />
-               </font>
-               <graphic>
-                  <ImageView fitHeight="35.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@assets/study.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Button>
-            <Button alignment="TOP_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#showUsuarios" prefHeight="35.0" styleClass="btn-menu" stylesheets="@assets/style.css" text="Listar Autores" textFill="WHITE">
-               <padding>
-                  <Insets bottom="5.0" left="10.0" />
-               </padding>
-               <font>
-                  <Font size="25.0" />
-               </font>
-               <graphic>
-                  <ImageView fitHeight="150.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@assets/reading-book.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Button>
-            <Button alignment="TOP_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#showUsuarios" prefHeight="35.0" styleClass="btn-menu" stylesheets="@assets/style.css" text="Listar Livros" textFill="WHITE">
-               <padding>
-                  <Insets bottom="5.0" left="10.0" />
-               </padding>
-               <font>
-                  <Font size="25.0" />
+                  <Font size="18.0" />
                </font>
                <graphic>
                   <ImageView fitHeight="35.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
