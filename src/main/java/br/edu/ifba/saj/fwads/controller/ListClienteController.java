@@ -1,6 +1,8 @@
 package br.edu.ifba.saj.fwads.controller;
 
 import br.edu.ifba.saj.fwads.model.Cliente;
+import br.edu.ifba.saj.fwads.model.ClienteFisico;
+import br.edu.ifba.saj.fwads.model.ClienteJuridico;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -40,19 +42,31 @@ public class ListClienteController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         configurarColunas();
         configurarPesquisa();
-        // Simulação de dados (Remover quando tiver o banco)
-        // listaMestre.add(new Cliente(...));
     }
 
     private void configurarColunas() {
-        colTipo.setCellValueFactory(new PropertyValueFactory<>("tipo"));
         colNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
-        colDocumento.setCellValueFactory(new PropertyValueFactory<>("documento"));
         colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
 
-        // Formatação personalizada para Cidade/UF
+        colTipo.setCellValueFactory(cellData -> {
+            if (cellData.getValue() instanceof ClienteFisico) {
+                return new SimpleStringProperty("Física");
+            } else {
+                return new SimpleStringProperty("Jurídica");
+            }
+        });
+
+        colDocumento.setCellValueFactory(cellData -> {
+            if (cellData.getValue() instanceof ClienteFisico pf) {
+                return new SimpleStringProperty(pf.getCpf());
+            } else if (cellData.getValue() instanceof ClienteJuridico pj) {
+                return new SimpleStringProperty(pj.getCnpj());
+            }
+            return new SimpleStringProperty("");
+        });
+
         colCidadeUf.setCellValueFactory(cellData -> new SimpleStringProperty(
-                cellData.getValue().getCidade() + "/" + cellData.getValue().getUf()));
+                cellData.getValue().getEndereco().getCidade() + "/" + cellData.getValue().getEndereco().getUf()));
 
         cbFiltro.getItems().addAll("Nome", "E-mail", "Documento");
         cbFiltro.getSelectionModel().selectFirst();
@@ -69,14 +83,20 @@ public class ListClienteController implements Initializable {
                 String lowerCaseFilter = newValue.toLowerCase();
                 String tipoFiltro = cbFiltro.getValue();
 
-                if ("Nome".equals(tipoFiltro))
+                if ("Nome".equals(tipoFiltro) && cliente.getNome() != null) {
                     return cliente.getNome().toLowerCase().contains(lowerCaseFilter);
-                if ("E-mail".equals(tipoFiltro))
+                }
+                if ("E-mail".equals(tipoFiltro) && cliente.getEmail() != null) {
                     return cliente.getEmail().toLowerCase().contains(lowerCaseFilter);
-                if ("Documento".equals(tipoFiltro))
-                    return cliente.getDocumento().contains(lowerCaseFilter);
-
-                return false; // Não encontrou
+                }
+                if ("Documento".equals(tipoFiltro)) {
+                    if (cliente instanceof ClienteFisico pf && pf.getCpf() != null) {
+                        return pf.getCpf().toLowerCase().contains(lowerCaseFilter);
+                    } else if (cliente instanceof ClienteJuridico pj && pj.getCnpj() != null) {
+                        return pj.getCnpj().toLowerCase().contains(lowerCaseFilter);
+                    }
+                }
+                return false;
             });
         });
 
@@ -85,16 +105,14 @@ public class ListClienteController implements Initializable {
 
     @FXML
     public void handleNovoCliente() {
-        System.out.println("Abrindo cadastro de novo cliente...");
-        // Código para abrir Stage CadCliente.fxml
+        System.out.println("Abrindo cadastro...");
     }
 
     @FXML
     public void handleEditarCliente() {
         Cliente selecionado = tabelaClientes.getSelectionModel().getSelectedItem();
         if (selecionado != null) {
-            System.out.println("Editando cliente: " + selecionado.getNome());
-            // Código para abrir Stage CadCliente.fxml passando o objeto
+            System.out.println("Editando: " + selecionado.getNome());
         } else {
             mostrarAlerta("Selecione um cliente para editar.");
         }
@@ -105,7 +123,6 @@ public class ListClienteController implements Initializable {
         Cliente selecionado = tabelaClientes.getSelectionModel().getSelectedItem();
         if (selecionado != null) {
             listaMestre.remove(selecionado);
-            // Remover do Banco de Dados aqui
         } else {
             mostrarAlerta("Selecione um cliente para apagar.");
         }

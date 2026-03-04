@@ -1,6 +1,8 @@
 package br.edu.ifba.saj.fwads.controller;
 
 import br.edu.ifba.saj.fwads.model.Cliente;
+import br.edu.ifba.saj.fwads.model.ClienteFisico;
+import br.edu.ifba.saj.fwads.model.ClienteJuridico;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
@@ -44,8 +46,8 @@ public class CadClienteController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Inicializa as opções do ComboBox
-        cbTipo.getItems().addAll("Pessoa Física", "Pessoa Jurídica", "Outros");
+        cbTipo.getItems().addAll("Pessoa Física", "Pessoa Jurídica");
+        cbTipo.getSelectionModel().selectFirst();
     }
 
     public void setCliente(Cliente cliente) {
@@ -58,62 +60,73 @@ public class CadClienteController implements Initializable {
         if (clienteAtual == null)
             return;
 
-        cbTipo.setValue(clienteAtual.getTipo());
         txtNome.setText(clienteAtual.getNome());
-        txtDocumento.setText(clienteAtual.getDocumento());
         txtEmail.setText(clienteAtual.getEmail());
         txtTelefone.setText(clienteAtual.getTelefone());
 
-        txtCep.setText(clienteAtual.getCep());
-        txtLogradouro.setText(clienteAtual.getLogradouro());
-        txtNumero.setText(clienteAtual.getNumero());
-        txtComplemento.setText(clienteAtual.getComplemento());
-        txtBairro.setText(clienteAtual.getBairro());
-        txtCidade.setText(clienteAtual.getCidade());
-        txtUf.setText(clienteAtual.getUf());
+        // Verifica qual é o tipo do objeto para preencher o ComboBox e o Documento
+        if (clienteAtual instanceof ClienteFisico pf) {
+            cbTipo.setValue("Pessoa Física");
+            txtDocumento.setText(pf.getCpf());
+        } else if (clienteAtual instanceof ClienteJuridico pj) {
+            cbTipo.setValue("Pessoa Jurídica");
+            txtDocumento.setText(pj.getCnpj());
+        }
+
+        // Acessando o objeto Endereco (Composição)
+        txtCep.setText(clienteAtual.getEndereco().getCep());
+        txtLogradouro.setText(clienteAtual.getEndereco().getLogradouro());
+        txtNumero.setText(clienteAtual.getEndereco().getNumero());
+        txtComplemento.setText(clienteAtual.getEndereco().getComplemento());
+        txtBairro.setText(clienteAtual.getEndereco().getBairro());
+        txtCidade.setText(clienteAtual.getEndereco().getCidade());
+        txtUf.setText(clienteAtual.getEndereco().getUf());
     }
 
     @FXML
     public void handleSalvar() {
-        if (!validarCampos())
+        if (txtNome.getText().isEmpty()) {
+            System.out.println("Nome é obrigatório");
             return;
-
-        if (clienteAtual == null) {
-            clienteAtual = new Cliente();
         }
 
-        // Passando dados da View para o Model
-        clienteAtual.setTipo(cbTipo.getValue());
+        // Se for um novo cadastro, decide qual classe instanciar
+        if (clienteAtual == null) {
+            if ("Pessoa Física".equals(cbTipo.getValue())) {
+                clienteAtual = new ClienteFisico();
+            } else {
+                clienteAtual = new ClienteJuridico();
+            }
+        }
+
+        // Preenche os dados básicos
         clienteAtual.setNome(txtNome.getText());
-        clienteAtual.setDocumento(txtDocumento.getText());
         clienteAtual.setEmail(txtEmail.getText());
         clienteAtual.setTelefone(txtTelefone.getText());
 
-        clienteAtual.setCep(txtCep.getText());
-        clienteAtual.setLogradouro(txtLogradouro.getText());
-        clienteAtual.setNumero(txtNumero.getText());
-        clienteAtual.setComplemento(txtComplemento.getText());
-        clienteAtual.setBairro(txtBairro.getText());
-        clienteAtual.setCidade(txtCidade.getText());
-        clienteAtual.setUf(txtUf.getText());
+        // Preenche o documento fazendo a conversão para a classe correta
+        if (clienteAtual instanceof ClienteFisico pf) {
+            pf.setCpf(txtDocumento.getText());
+        } else if (clienteAtual instanceof ClienteJuridico pj) {
+            pj.setCnpj(txtDocumento.getText());
+        }
+
+        // Preenche o endereço usando getEndereco()
+        clienteAtual.getEndereco().setCep(txtCep.getText());
+        clienteAtual.getEndereco().setLogradouro(txtLogradouro.getText());
+        clienteAtual.getEndereco().setNumero(txtNumero.getText());
+        clienteAtual.getEndereco().setComplemento(txtComplemento.getText());
+        clienteAtual.getEndereco().setBairro(txtBairro.getText());
+        clienteAtual.getEndereco().setCidade(txtCidade.getText());
+        clienteAtual.getEndereco().setUf(txtUf.getText());
 
         System.out.println("Salvando Cliente: " + clienteAtual.getNome());
-
         fecharJanela();
     }
 
     @FXML
     public void handleCancelar() {
         fecharJanela();
-    }
-
-    private boolean validarCampos() {
-        // Exemplo simples de validação
-        if (txtNome.getText() == null || txtNome.getText().isEmpty()) {
-            System.out.println("Nome é obrigatório");
-            return false;
-        }
-        return true;
     }
 
     private void fecharJanela() {

@@ -1,7 +1,3 @@
-/**
- * Sample Skeleton for 'Login.fxml' Controller Class
- */
-
 package br.edu.ifba.saj.fwads.controller;
 
 import br.edu.ifba.saj.fwads.App;
@@ -22,10 +18,10 @@ public class LoginController {
 
     @FXML
     void entrar(ActionEvent event) {
-        if(txUsuario.getText().equals("admin") && txSenha.getText().equals("admin")){
+        if (txUsuario.getText().equals("admin") && txSenha.getText().equals("admin")) {
             new Alert(AlertType.INFORMATION, "Usuário e senha corretos").showAndWait();
             App.setRoot("controller/Master.fxml");
-        }else{
+        } else {
             new Alert(AlertType.ERROR, "Usuário ou senha inválidos").show();
         }
     }

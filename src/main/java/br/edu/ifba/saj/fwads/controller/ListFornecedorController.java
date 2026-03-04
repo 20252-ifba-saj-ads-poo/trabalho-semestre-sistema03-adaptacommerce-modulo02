@@ -38,7 +38,6 @@ public class ListFornecedorController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         configurarColunas();
-        carregarDadosFicticios();
         configurarPesquisa();
     }
 
@@ -49,7 +48,7 @@ public class ListFornecedorController implements Initializable {
         colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
 
         colCidadeUf.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(
-                cellData.getValue().getCidade() + "/" + cellData.getValue().getUf()));
+                cellData.getValue().getEndereco().getCidade() + "/" + cellData.getValue().getEndereco().getUf()));
 
         cbFiltro.getItems().addAll("Nome", "CNPJ", "E-mail");
         cbFiltro.getSelectionModel().selectFirst();
@@ -66,13 +65,15 @@ public class ListFornecedorController implements Initializable {
                 String lowerCaseFilter = newValue.toLowerCase();
                 String tipoFiltro = cbFiltro.getValue();
 
-                if ("Nome".equals(tipoFiltro))
+                if ("Nome".equals(tipoFiltro) && fornecedor.getNomeFantasia() != null) {
                     return fornecedor.getNomeFantasia().toLowerCase().contains(lowerCaseFilter);
-                if ("CNPJ".equals(tipoFiltro))
+                }
+                if ("CNPJ".equals(tipoFiltro) && fornecedor.getCnpj() != null) {
                     return fornecedor.getCnpj().contains(lowerCaseFilter);
-                if ("E-mail".equals(tipoFiltro))
+                }
+                if ("E-mail".equals(tipoFiltro) && fornecedor.getEmail() != null) {
                     return fornecedor.getEmail().toLowerCase().contains(lowerCaseFilter);
-
+                }
                 return false;
             });
         });
@@ -83,7 +84,6 @@ public class ListFornecedorController implements Initializable {
     @FXML
     public void handleNovoFornecedor() {
         System.out.println("Abrir tela de cadastro");
-        // Lógica para abrir Stage CadFornecedor.fxml
     }
 
     @FXML
@@ -91,7 +91,6 @@ public class ListFornecedorController implements Initializable {
         Fornecedor selecionado = tabelaFornecedores.getSelectionModel().getSelectedItem();
         if (selecionado != null) {
             System.out.println("Editando: " + selecionado.getNomeFantasia());
-            // Lógica para abrir Stage enviando o objeto 'selecionado'
         } else {
             mostrarAlerta("Selecione um fornecedor para editar.");
         }
@@ -123,9 +122,5 @@ public class ListFornecedorController implements Initializable {
         alert.setHeaderText(null);
         alert.setContentText(msg);
         alert.showAndWait();
-    }
-
-    private void carregarDadosFicticios() {
-        // Implementar carga de dados
     }
 }
