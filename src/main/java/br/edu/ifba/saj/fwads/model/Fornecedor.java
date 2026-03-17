@@ -1,8 +1,9 @@
 package br.edu.ifba.saj.fwads.model;
 
-public class Fornecedor {
+import java.util.UUID;
 
-    private int id;
+public class Fornecedor extends AbstractModel<UUID> {
+
     private String razaoSocial;
     private String nomeFantasia;
     private String cnpj;
@@ -14,16 +15,6 @@ public class Fornecedor {
 
     public Fornecedor() {
         this.endereco = new Endereco();
-    }
-
-    // --- GETTERS E SETTERS ---
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getRazaoSocial() {

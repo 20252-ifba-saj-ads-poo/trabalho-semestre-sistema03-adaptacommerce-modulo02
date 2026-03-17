@@ -1,7 +1,8 @@
 package br.edu.ifba.saj.fwads.model;
 
-public abstract class Cliente {
-    private int id;
+import java.util.UUID;
+
+public abstract class Cliente extends AbstractModel<UUID> {
     private String nome;
     private String email;
     private String telefone;
@@ -9,15 +10,6 @@ public abstract class Cliente {
 
     public Cliente() {
         this.endereco = new Endereco();
-    }
-
-    // --- GETTERS E SETTERS ---
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getNome() {
