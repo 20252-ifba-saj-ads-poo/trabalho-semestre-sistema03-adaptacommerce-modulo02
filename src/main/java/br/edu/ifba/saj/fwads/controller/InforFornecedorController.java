@@ -8,7 +8,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.stage.Stage;
 
 public class InforFornecedorController {
 
@@ -60,7 +59,6 @@ public class InforFornecedorController {
         lblCnpj.setText(f.getCnpj());
         lblEmail.setText(f.getEmail());
 
-        // Formata o endereço acessando a classe Endereco
         String enderecoCompleto = String.format("%s, %s - %s, %s/%s",
                 f.getEndereco().getLogradouro(),
                 f.getEndereco().getNumero(),
@@ -100,11 +98,16 @@ public class InforFornecedorController {
 
     @FXML
     public void handleFechar() {
-        Stage stage = (Stage) lblNome.getScene().getWindow();
-        stage.close();
+        try {
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("ListFornecedor.fxml"));
+            javafx.scene.Parent root = loader.load();
+            javafx.scene.layout.BorderPane masterPane = (javafx.scene.layout.BorderPane) lblNome.getScene().getRoot();
+            masterPane.setCenter(root);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    // Classes internas de Mock apenas para preencher a visualização das tabelas
     public static class PedidoMock {
         String numero, dataPrevista, valor, status;
 

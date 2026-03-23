@@ -58,13 +58,13 @@ public class MasterController {
     @FXML
     void showFornecedores(ActionEvent event) {
         limparBotoes(event.getSource());
-        showFXMLFile("resources/ListFornecedor.fxml");
+        showFXMLFile("ListFornecedor.fxml");
     }
 
     @FXML
     void showClientes(ActionEvent event) {
         limparBotoes(event.getSource());
-        showFXMLFile("resources/ListCliente.fxml");
+        showFXMLFile("ListCliente.fxml");
     }
 
     private void limparBotoes(Object source) {

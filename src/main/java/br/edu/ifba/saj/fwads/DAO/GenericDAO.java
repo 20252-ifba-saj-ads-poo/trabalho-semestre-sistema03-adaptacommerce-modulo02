@@ -1,4 +1,4 @@
-package br.edu.ifba.saj.fwads.DAO;
+package br.edu.ifba.saj.fwads.dao;
 
 import br.edu.ifba.saj.fwads.model.AbstractModel;
 import java.util.List;

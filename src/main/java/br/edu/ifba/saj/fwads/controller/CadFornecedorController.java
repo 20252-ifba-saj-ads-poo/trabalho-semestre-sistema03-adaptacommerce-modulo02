@@ -1,9 +1,13 @@
 package br.edu.ifba.saj.fwads.controller;
 
-import javafx.fxml.FXML;
-import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 import br.edu.ifba.saj.fwads.model.Fornecedor;
+import br.edu.ifba.saj.fwads.service.FornecedorService;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.control.Alert;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
 
 public class CadFornecedorController {
 
@@ -39,6 +43,7 @@ public class CadFornecedorController {
 
     private Fornecedor fornecedorAtual;
     private boolean isEditMode = false;
+    private final FornecedorService fornecedorService = new FornecedorService();
 
     public void setFornecedor(Fornecedor fornecedor) {
         this.fornecedorAtual = fornecedor;
@@ -53,37 +58,71 @@ public class CadFornecedorController {
         txtNomeFantasia.setText(fornecedorAtual.getNomeFantasia());
         txtCnpj.setText(fornecedorAtual.getCnpj());
         txtIe.setText(fornecedorAtual.getIe());
-        // Preencher demais campos...
+        txtEmail.setText(fornecedorAtual.getEmail());
+        txtTelefone.setText(fornecedorAtual.getTelefone());
+        txtContato.setText(fornecedorAtual.getContato());
+
+        txtCep.setText(fornecedorAtual.getEndereco().getCep());
+        txtLogradouro.setText(fornecedorAtual.getEndereco().getLogradouro());
+        txtNumero.setText(fornecedorAtual.getEndereco().getNumero());
+        txtComplemento.setText(fornecedorAtual.getEndereco().getComplemento());
+        txtBairro.setText(fornecedorAtual.getEndereco().getBairro());
+        txtCidade.setText(fornecedorAtual.getEndereco().getCidade());
+        txtUf.setText(fornecedorAtual.getEndereco().getUf());
     }
 
     @FXML
     public void handleSalvar() {
-        if (!validarCampos())
-            return;
+        try {
+            if (fornecedorAtual == null) {
+                fornecedorAtual = new Fornecedor();
+            }
+            fornecedorAtual.setRazaoSocial(txtRazaoSocial.getText());
+            fornecedorAtual.setNomeFantasia(txtNomeFantasia.getText());
+            fornecedorAtual.setCnpj(txtCnpj.getText());
+            fornecedorAtual.setIe(txtIe.getText());
+            fornecedorAtual.setEmail(txtEmail.getText());
+            fornecedorAtual.setTelefone(txtTelefone.getText());
+            fornecedorAtual.setContato(txtContato.getText());
 
-        if (fornecedorAtual == null) {
-            fornecedorAtual = new Fornecedor();
+            fornecedorAtual.getEndereco().setCep(txtCep.getText());
+            fornecedorAtual.getEndereco().setLogradouro(txtLogradouro.getText());
+            fornecedorAtual.getEndereco().setNumero(txtNumero.getText());
+            fornecedorAtual.getEndereco().setComplemento(txtComplemento.getText());
+            fornecedorAtual.getEndereco().setBairro(txtBairro.getText());
+            fornecedorAtual.getEndereco().setCidade(txtCidade.getText());
+            fornecedorAtual.getEndereco().setUf(txtUf.getText());
+
+            if (this.isEditMode) {
+                fornecedorService.atualizar(fornecedorAtual);
+            } else {
+                fornecedorService.salvar(fornecedorAtual);
+            }
+
+            voltarParaLista();
+
+        } catch (IllegalArgumentException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erro de Validação");
+            alert.setHeaderText("Não foi possível salvar o fornecedor.");
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
         }
-
-        fornecedorAtual.setRazaoSocial(txtRazaoSocial.getText());
-        fornecedorAtual.setCnpj(txtCnpj.getText());
-        // Setar demais campos...
-
-        System.out.println("Salvando: " + fornecedorAtual.getRazaoSocial());
-        fecharJanela();
     }
 
     @FXML
     public void handleCancelar() {
-        fecharJanela();
+        voltarParaLista();
     }
 
-    private boolean validarCampos() {
-        return true;
-    }
-
-    private void fecharJanela() {
-        Stage stage = (Stage) txtRazaoSocial.getScene().getWindow();
-        stage.close();
+    private void voltarParaLista() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("ListFornecedor.fxml"));
+            Parent root = loader.load();
+            BorderPane masterPane = (BorderPane) txtRazaoSocial.getScene().getRoot();
+            masterPane.setCenter(root);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

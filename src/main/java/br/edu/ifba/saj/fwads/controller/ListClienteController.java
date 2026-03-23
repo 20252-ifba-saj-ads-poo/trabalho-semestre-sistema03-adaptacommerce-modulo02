@@ -1,5 +1,7 @@
 package br.edu.ifba.saj.fwads.controller;
 
+import br.edu.ifba.saj.fwads.dao.GenericDAO;
+import br.edu.ifba.saj.fwads.dao.GenericDAOImpl;
 import br.edu.ifba.saj.fwads.model.Cliente;
 import br.edu.ifba.saj.fwads.model.ClienteFisico;
 import br.edu.ifba.saj.fwads.model.ClienteJuridico;
@@ -8,12 +10,16 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.BorderPane;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.UUID;
 
 public class ListClienteController implements Initializable {
 
@@ -38,10 +44,18 @@ public class ListClienteController implements Initializable {
     private ObservableList<Cliente> listaMestre = FXCollections.observableArrayList();
     private FilteredList<Cliente> listaFiltrada;
 
+    private GenericDAO<Cliente, UUID> dao = new GenericDAOImpl<>(Cliente.class, UUID.class);
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         configurarColunas();
         configurarPesquisa();
+        carregarDados();
+    }
+
+    private void carregarDados() {
+        listaMestre.clear();
+        listaMestre.addAll(dao.buscarTodos());
     }
 
     private void configurarColunas() {
@@ -99,20 +113,40 @@ public class ListClienteController implements Initializable {
                 return false;
             });
         });
-
         tabelaClientes.setItems(listaFiltrada);
     }
 
     @FXML
     public void handleNovoCliente() {
-        System.out.println("Abrindo cadastro...");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("CadCliente.fxml"));
+            Parent root = loader.load();
+
+            BorderPane masterPane = (BorderPane) tabelaClientes.getScene().getRoot();
+            masterPane.setCenter(root);
+        } catch (Exception e) {
+            e.printStackTrace();
+            mostrarAlerta("Erro ao carregar a tela de cadastro.");
+        }
     }
 
     @FXML
     public void handleEditarCliente() {
         Cliente selecionado = tabelaClientes.getSelectionModel().getSelectedItem();
         if (selecionado != null) {
-            System.out.println("Editando: " + selecionado.getNome());
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("CadCliente.fxml"));
+                Parent root = loader.load();
+
+                CadClienteController controller = loader.getController();
+                controller.setCliente(selecionado);
+
+                BorderPane masterPane = (BorderPane) tabelaClientes.getScene().getRoot();
+                masterPane.setCenter(root);
+            } catch (Exception e) {
+                e.printStackTrace();
+                mostrarAlerta("Erro ao carregar a tela de edição.");
+            }
         } else {
             mostrarAlerta("Selecione um cliente para editar.");
         }
@@ -122,6 +156,7 @@ public class ListClienteController implements Initializable {
     public void handleApagarCliente() {
         Cliente selecionado = tabelaClientes.getSelectionModel().getSelectedItem();
         if (selecionado != null) {
+            dao.deletar(selecionado.getId());
             listaMestre.remove(selecionado);
         } else {
             mostrarAlerta("Selecione um cliente para apagar.");

@@ -1,4 +1,4 @@
-package br.edu.ifba.saj.fwads.DAO;
+package br.edu.ifba.saj.fwads.dao;
 
 import br.edu.ifba.saj.fwads.model.AbstractModel;
 import java.time.LocalDateTime;
@@ -8,44 +8,54 @@ import java.util.List;
 import java.util.Map;
 
 public class GenericDAOImpl<T extends AbstractModel<ID>, ID> implements GenericDAO<T, ID> {
-    protected Map<ID, T> bancoDeDados = new HashMap<>();
-    private final Class<ID> tipoIdClass;
+    private static final Map<Class<?>, Map<Object, Object>> bancoDeDadosMock = new HashMap<>();
+    private final Class<T> classeEntidade;
+    private final Class<ID> classeId;
 
-    public GenericDAOImpl(Class<ID> tipoIdClass) {
-        this.tipoIdClass = tipoIdClass;
+    public GenericDAOImpl(Class<T> classeEntidade, Class<ID> classeId) {
+        this.classeEntidade = classeEntidade;
+        this.classeId = classeId;
+        bancoDeDadosMock.putIfAbsent(classeEntidade, new HashMap<>());
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private Map<ID, T> getTabela() {
+        return (Map<ID, T>) (Map) bancoDeDadosMock.get(classeEntidade);
     }
 
     @Override
     public ID salvar(T entidade) {
-        ID novoId = IdGenerator.gerarNovoId(tipoIdClass);
+        ID novoId = IdGenerator.gerarNovoId(classeId);
         entidade.setId(novoId);
+
         LocalDateTime agora = LocalDateTime.now();
         entidade.setCreatedAt(agora);
         entidade.setUpdatedAt(agora);
-        bancoDeDados.put(entidade.getId(), entidade);
+
+        getTabela().put(entidade.getId(), entidade);
         return novoId;
     }
 
     @Override
     public void atualizar(T entidade) {
-        if (bancoDeDados.containsKey(entidade.getId())) {
+        if (getTabela().containsKey(entidade.getId())) {
             entidade.setUpdatedAt(LocalDateTime.now());
-            bancoDeDados.put(entidade.getId(), entidade);
+            getTabela().put(entidade.getId(), entidade);
         }
     }
 
     @Override
     public T buscarPorId(ID id) {
-        return bancoDeDados.get(id);
+        return getTabela().get(id);
     }
 
     @Override
     public void deletar(ID id) {
-        bancoDeDados.remove(id);
+        getTabela().remove(id);
     }
 
     @Override
     public List<T> buscarTodos() {
-        return new ArrayList<>(bancoDeDados.values());
+        return new ArrayList<>(getTabela().values());
     }
 }
