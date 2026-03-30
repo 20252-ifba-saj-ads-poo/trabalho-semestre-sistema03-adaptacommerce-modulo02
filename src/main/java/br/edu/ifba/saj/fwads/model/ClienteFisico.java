@@ -14,4 +14,29 @@ public class ClienteFisico extends Cliente {
     public void setCpf(String cpf) {
         this.cpf = cpf;
     }
+
+    @Override
+    public void validaIdentificacao() {
+        String cpfLimpo = limparMascara(getCpf());
+        if (cpfLimpo.length() != 11) {
+            throw new IllegalArgumentException("O CPF deve conter exatamente 11 dígitos numéricos.");
+        }
+        setCpf(cpfLimpo);
+        
+    }
+
+    private String limparMascara(String texto) {
+        if (texto == null)
+            return "";
+        return texto.replaceAll("[^0-9]", "");
+    }
+
+    @Override
+    public String getIdentificacao() {
+        return getCpf();
+    }
+
+    
+
+   
 }

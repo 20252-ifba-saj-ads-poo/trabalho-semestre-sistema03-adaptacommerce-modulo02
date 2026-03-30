@@ -1,8 +1,7 @@
 package br.edu.ifba.saj.fwads.model;
 
-import java.util.UUID;
 
-public abstract class Cliente extends AbstractModel<UUID> {
+public abstract class Cliente extends AbstractModel<String> {
     private String nome;
     private String email;
     private String telefone;
@@ -48,4 +47,7 @@ public abstract class Cliente extends AbstractModel<UUID> {
     public String toString() {
         return nome;
     }
+
+    public abstract void validaIdentificacao();
+    public abstract String getIdentificacao();
 }

@@ -19,7 +19,7 @@ public class GenericDAOImpl<T extends AbstractModel<ID>, ID> implements GenericD
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    private Map<ID, T> getTabela() {
+    protected Map<ID, T> getTabela() {
         return (Map<ID, T>) (Map) bancoDeDadosMock.get(classeEntidade);
     }
 
@@ -30,7 +30,7 @@ public class GenericDAOImpl<T extends AbstractModel<ID>, ID> implements GenericD
 
         LocalDateTime agora = LocalDateTime.now();
         entidade.setCreatedAt(agora);
-        entidade.setUpdatedAt(agora);
+        //entidade.setUpdatedAt(agora);
 
         getTabela().put(entidade.getId(), entidade);
         return novoId;

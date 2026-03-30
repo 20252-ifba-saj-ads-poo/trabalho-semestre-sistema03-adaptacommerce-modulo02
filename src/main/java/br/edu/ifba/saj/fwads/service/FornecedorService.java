@@ -1,30 +1,15 @@
 package br.edu.ifba.saj.fwads.service;
 
-import br.edu.ifba.saj.fwads.dao.GenericDAO;
-import br.edu.ifba.saj.fwads.dao.GenericDAOImpl;
 import br.edu.ifba.saj.fwads.model.Fornecedor;
 
 import java.util.UUID;
 
-public class FornecedorService {
-
-    private final GenericDAO<Fornecedor, UUID> dao;
-
+public class FornecedorService extends Service<Fornecedor, UUID> {
     public FornecedorService() {
-        this.dao = new GenericDAOImpl<>(Fornecedor.class, UUID.class);
+        super(Fornecedor.class, UUID.class);
     }
 
-    public void salvar(Fornecedor fornecedor) throws IllegalArgumentException {
-        validarFornecedor(fornecedor);
-        dao.salvar(fornecedor);
-    }
-
-    public void atualizar(Fornecedor fornecedor) throws IllegalArgumentException {
-        validarFornecedor(fornecedor);
-        dao.atualizar(fornecedor);
-    }
-
-    private void validarFornecedor(Fornecedor fornecedor) throws IllegalArgumentException {
+    public void validar(Fornecedor fornecedor) throws IllegalArgumentException {
         if (fornecedor.getNomeFantasia() == null || fornecedor.getNomeFantasia().trim().isEmpty()) {
             throw new IllegalArgumentException("O Nome Fantasia é obrigatório.");
         }
@@ -55,4 +40,6 @@ public class FornecedorService {
             return "";
         return texto.replaceAll("[^0-9]", "");
     }
+
+
 }
